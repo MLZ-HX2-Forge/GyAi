@@ -1,5 +1,4 @@
 
-
 # Arduino_JDY-31_communication，后端通过JDY-31蓝牙与arduino进行简单的通信
 import serial
 import time
