@@ -7,13 +7,13 @@
 import subprocess
 import sys
 
-# 在这里修改你要安装的包
 PACKAGES = [
-
-       "pandas",
-       "opencv-python"
-
+"pandas",
+"opencv-python",
+"numpy",
+"pyserial"
 ]
+# 在这里修改你要安装的包
 
 # 清华镜像源
 MIRROR = "https://pypi.tuna.tsinghua.edu.cn/simple"
