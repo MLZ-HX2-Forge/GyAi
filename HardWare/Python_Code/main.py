@@ -652,11 +652,6 @@ config_template = {
     "auto_connect": False
 }
 
-# 安装所需库的requirements.txt内容
-requirements = """
-pyserial>=3.5
-matplotlib>=3.5.0
-"""
 
 if __name__ == "__main__":
     # 检查是否需要创建配置文件
