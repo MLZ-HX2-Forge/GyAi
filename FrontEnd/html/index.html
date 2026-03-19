@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GyAI 工业智能助手 - 专业的工业AI解决方案，助力企业数字化转型">
+    <title>GyAI 工业智能助手</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/landing.css">
+    <link rel="stylesheet" href="../css/components/navbar.css">
+</head>
+<body>
+    <div class="landing-page">
+        <header class="landing-header" id="header">
+            <div class="header-content">
+                <a href="/" class="logo">
+                    <div class="logo-icon">⚡</div>
+                    <div class="logo-text">Gy<span>AI</span></div>
+                </a>
+                
+                <nav class="nav-links">
+                    <a href="#features" class="nav-link">功能特性</a>
+                    <a href="#models" class="nav-link">AI模型</a>
+                    <a href="#knowledge" class="nav-link">知识库</a>
+                    <a href="#contact" class="nav-link">联系我们</a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="btn btn-secondary" id="guestBtn">游客体验</button>
+                    <button class="btn btn-primary" id="loginBtn">登录 / 注册</button>
+                </div>
+            </div>
+        </header>
+
+        <section class="hero-section">
+            <div class="hero-bg">
+                <div class="hero-gradient hero-gradient-1"></div>
+                <div class="hero-gradient hero-gradient-2"></div>
+                <div class="hero-grid"></div>
+                <div class="floating-particles" id="particles"></div>
+            </div>
+            
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    工业智能化解决方案
+                </div>
+                
+                <h1 class="hero-title">
+                    重新定义<br>
+                    <span class="highlight">工业智能化</span>
+                </h1>
+                
+                <p class="hero-subtitle">
+                    基于先进AI技术，为工业场景提供专业的智能对话、设备诊断、
+                    工艺优化等全方位服务，助力企业实现数字化转型
+                </p>
+                
+                <div class="hero-actions">
+                    <button class="btn btn-primary btn-lg" id="startChatBtn">
+                        <span>开始使用</span>
+                        <span>→</span>
+                    </button>
+                    <button class="btn btn-outline btn-lg" id="watchDemoBtn">
+                        <span>观看演示</span>
+                    </button>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">10K+</div>
+                        <div class="stat-label">企业用户</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">50M+</div>
+                        <div class="stat-label">对话次数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">99.9%</div>
+                        <div class="stat-label">服务可用性</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hero-scroll">
+                <div class="hero-scroll-icon"></div>
+                <span>向下滚动</span>
+            </div>
+        </section>
+
+        <section class="features-section" id="features">
+            <div class="glow-orb glow-orb-1"></div>
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">核心功能</span>
+                    <h2 class="section-title">为工业场景量身打造</h2>
+                    <p class="section-subtitle">
+                        深度融合AI技术与工业知识，提供专业、可靠的智能化服务
+                    </p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-card scroll-animate" data-animate="fade-up">
+                        <div class="feature-icon">🤖</div>
+                        <h3 class="feature-title">智能对话助手</h3>
+                        <p class="feature-desc">
+                            基于大语言模型的智能对话系统，支持多轮对话、
+                            上下文理解，快速解答工业技术问题
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card scroll-animate" data-animate="fade-up" data-delay="100">
+                        <div class="feature-icon">🔧</div>
+                        <h3 class="feature-title">设备故障诊断</h3>
+                        <p class="feature-desc">
+                            结合知识库与AI分析能力，快速定位设备故障原因，
+                            提供专业维修建议
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card scroll-animate" data-animate="fade-up" data-delay="200">
+                        <div class="feature-icon">📊</div>
+                        <h3 class="feature-title">工艺优化建议</h3>
+                        <p class="feature-desc">
+                            分析生产数据，提供工艺流程优化方案，
+                            提升生产效率和产品质量
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card scroll-animate" data-animate="fade-up" data-delay="300">
+                        <div class="feature-icon">📷</div>
+                        <h3 class="feature-title">视觉识别分析</h3>
+                        <p class="feature-desc">
+                            支持图片上传与分析，实现设备状态检测、
+                            缺陷识别等视觉AI能力
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card scroll-animate" data-animate="fade-up" data-delay="400">
+                        <div class="feature-icon">📚</div>
+                        <h3 class="feature-title">专业知识库</h3>
+                        <p class="feature-desc">
+                            内置工业领域专业知识库，涵盖设备维护、
+                            安全生产、质量管理等多个领域
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card scroll-animate" data-animate="fade-up" data-delay="500">
+                        <div class="feature-icon">🔒</div>
+                        <h3 class="feature-title">数据安全保障</h3>
+                        <p class="feature-desc">
+                            采用企业级安全架构，数据加密传输存储，
+                            确保企业信息安全
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="models-section" id="models">
+            <div class="glow-orb glow-orb-2"></div>
+            <div class="models-content">
+                <div class="models-info">
+                    <span class="section-tag">AI模型</span>
+                    <h2 class="section-title">强大的模型支持</h2>
+                    <p class="section-subtitle">
+                        集成多个国内领先的大语言模型，根据不同场景智能选择最优模型，
+                        确保响应质量和速度
+                    </p>
+                </div>
+                
+                <div class="models-visual">
+                    <div class="model-cards">
+                        <div class="model-card scroll-animate" data-animate="slide-left">
+                            <div class="model-logo">DS</div>
+                            <div class="model-info">
+                                <h4>DeepSeek V3.1</h4>
+                                <p>深度求索大模型，擅长逻辑推理</p>
+                            </div>
+                            <span class="model-badge">默认</span>
+                        </div>
+                        
+                        <div class="model-card scroll-animate" data-animate="slide-left" data-delay="100">
+                            <div class="model-logo">KM</div>
+                            <div class="model-info">
+                                <h4>Kimi K2</h4>
+                                <p>月之暗面大模型，长文本理解</p>
+                            </div>
+                        </div>
+                        
+                        <div class="model-card scroll-animate" data-animate="slide-left" data-delay="200">
+                            <div class="model-logo">DB</div>
+                            <div class="model-info">
+                                <h4>豆包视觉</h4>
+                                <p>字节跳动视觉模型，图片分析</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="knowledge-section" id="knowledge">
+            <div class="glow-orb glow-orb-3"></div>
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">知识库</span>
+                    <h2 class="section-title">工业领域专业知识</h2>
+                    <p class="section-subtitle">
+                        内置丰富的工业知识库，覆盖多个专业领域
+                    </p>
+                </div>
+                
+                <div class="knowledge-grid">
+                    <div class="knowledge-card scroll-animate" data-animate="scale">
+                        <div class="knowledge-icon">⚙️</div>
+                        <h3 class="knowledge-title">设备维护</h3>
+                        <p class="knowledge-desc">设备保养、故障诊断、维修方案</p>
+                    </div>
+                    
+                    <div class="knowledge-card scroll-animate" data-animate="scale" data-delay="100">
+                        <div class="knowledge-icon">🛡️</div>
+                        <h3 class="knowledge-title">安全生产</h3>
+                        <p class="knowledge-desc">安全规范、风险评估、应急预案</p>
+                    </div>
+                    
+                    <div class="knowledge-card scroll-animate" data-animate="scale" data-delay="200">
+                        <div class="knowledge-icon">📈</div>
+                        <h3 class="knowledge-title">工艺优化</h3>
+                        <p class="knowledge-desc">流程改进、效率提升、成本控制</p>
+                    </div>
+                    
+                    <div class="knowledge-card scroll-animate" data-animate="scale" data-delay="300">
+                        <div class="knowledge-icon">✅</div>
+                        <h3 class="knowledge-title">质量管理</h3>
+                        <p class="knowledge-desc">质量标准、检测方案、体系认证</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section" id="contact">
+            <div class="cta-content">
+                <h2 class="cta-title scroll-animate" data-animate="fade-up">开始您的智能化之旅</h2>
+                <p class="cta-subtitle scroll-animate" data-animate="fade-up" data-delay="100">
+                    立即体验GyAI工业智能助手，让AI为您的企业赋能
+                </p>
+                <div class="cta-actions scroll-animate" data-animate="fade-up" data-delay="200">
+                    <button class="btn btn-primary btn-lg" id="ctaStartBtn">
+                        免费开始使用
+                    </button>
+                    <button class="btn btn-outline btn-lg" id="contactBtn">
+                        联系我们
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <footer class="landing-footer">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#" class="footer-link">关于我们</a>
+                    <a href="#" class="footer-link">使用条款</a>
+                    <a href="#" class="footer-link">隐私政策</a>
+                    <a href="#" class="footer-link">帮助中心</a>
+                </div>
+                <div class="footer-copyright">
+                    © 2024 GyAI 工业智能助手. All rights reserved.
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">欢迎来到 GyAI</h3>
+                <button class="modal-close" id="closeModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" data-tab="login">登录</div>
+                    <div class="auth-tab" data-tab="register">注册</div>
+                </div>
+                
+                <div class="auth-error" id="authError"></div>
+                <div class="auth-success" id="authSuccess"></div>
+                
+                <form class="auth-form" id="loginForm">
+                    <input type="text" class="auth-input" id="loginUsername" placeholder="用户名" required>
+                    <input type="password" class="auth-input" id="loginPassword" placeholder="密码" required>
+                    <div class="auth-options">
+                        <label class="auth-remember">
+                            <input type="checkbox" checked>
+                            <span>记住我</span>
+                        </label>
+                        <a href="#" class="auth-forgot">忘记密码？</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary auth-btn">登录</button>
+                </form>
+                
+                <form class="auth-form hidden" id="registerForm">
+                    <input type="text" class="auth-input" id="registerUsername" placeholder="用户名（3-20个字符）" required>
+                    <input type="email" class="auth-input" id="registerEmail" placeholder="邮箱（可选）">
+                    <input type="password" class="auth-input" id="registerPassword" placeholder="密码（至少6个字符）" required>
+                    <input type="password" class="auth-input" id="registerConfirmPassword" placeholder="确认密码" required>
+                    <button type="submit" class="btn btn-primary auth-btn">注册</button>
+                </form>
+                
+                <div class="auth-divider">
+                    <span>或者</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="guest-btn" id="guestModeBtn">
+                    🚀 以游客身份体验
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/utils/time.js"></script>
+    <script src="../js/services/apiService.js"></script>
+    <script src="../js/components/auth.js"></script>
+    <script src="../js/components/landing.js"></script>
+</body>
+</html>

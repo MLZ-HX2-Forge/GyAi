@@ -7,13 +7,13 @@
 import subprocess
 import sys
 
-PACKAGES = [
-"pandas",
-"opencv-python",
-"numpy",
-"pyserial"
-]
 # 在这里修改你要安装的包
+PACKAGES = [
+
+    'flask_sqlalchemy',
+
+
+]
 
 # 清华镜像源
 MIRROR = "https://pypi.tuna.tsinghua.edu.cn/simple"
@@ -45,3 +45,10 @@ if __name__ == "__main__":
                 print(f"  ✅ {pkg}")
             except:
                 print(f"  ❌ {pkg}")
+
+
+
+
+
+
+
