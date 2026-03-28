@@ -8,11 +8,15 @@ const Auth = {
     currentUser: null,
     isGuest: false,
     isModalOpen: false,
+    initialized: false,
     
     async init() {
+        if (this.initialized) return;
+        this.initialized = true;
+        
         const hasSession = await this.checkSession();
         if (!hasSession) {
-            this.enableGuestMode();
+            await this.loginAsGuest();
         }
         this.bindEvents();
     },
@@ -175,6 +179,7 @@ const Auth = {
         
         try {
             const result = await API.auth.login(username, password);
+            console.log('登录响应:', result);
             
             if (result.code === 200 && result.data) {
                 this.currentUser = result.data.user;
@@ -187,6 +192,7 @@ const Auth = {
                 this.showError(result.message || '登录失败');
             }
         } catch (error) {
+            console.error('登录错误:', error);
             this.showError('登录失败，请稍后重试');
         }
     },
@@ -219,6 +225,7 @@ const Auth = {
         
         try {
             const result = await API.auth.register(username, password, email);
+            console.log('注册响应:', result);
             
             if (result.code === 200) {
                 this.showSuccess('注册成功，请登录');
@@ -233,6 +240,7 @@ const Auth = {
                 this.showError(result.message || '注册失败');
             }
         } catch (error) {
+            console.error('注册错误:', error);
             this.showError('注册失败，请稍后重试');
         }
     },
@@ -276,6 +284,8 @@ const Auth = {
         const userAvatar = document.getElementById('userAvatar');
         const userPlan = document.getElementById('userPlan');
         const userIconAvatar = document.getElementById('userIconAvatar');
+        const userMenu = document.getElementById('userMenu');
+        const dropdownLogin = document.getElementById('dropdownLogin');
         
         if (this.currentUser) {
             if (loginBtn) {
@@ -305,6 +315,30 @@ const Auth = {
             if (userPlan) {
                 userPlan.textContent = this.isGuest ? '未登录' : '免费版';
             }
+            
+            if (userMenu) {
+                if (this.isGuest) {
+                    userMenu.classList.remove('logged-in');
+                } else {
+                    userMenu.classList.add('logged-in');
+                }
+            }
+            
+            // 更新下拉菜单中的登录/退出登录选项
+            if (dropdownLogin) {
+                const spanEl = dropdownLogin.querySelector('span');
+                if (spanEl) {
+                    if (this.isGuest) {
+                        spanEl.textContent = '登录';
+                        // 更新图标为登录图标
+                        dropdownLogin.querySelector('svg').innerHTML = '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>';
+                    } else {
+                        spanEl.textContent = '退出登录';
+                        // 更新图标为退出登录图标
+                        dropdownLogin.querySelector('svg').innerHTML = '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>';
+                    }
+                }
+            }
         }
     },
     
@@ -332,7 +366,3 @@ const Auth = {
         return this.currentUser;
     }
 };
-
-document.addEventListener('DOMContentLoaded', () => {
-    Auth.init();
-});

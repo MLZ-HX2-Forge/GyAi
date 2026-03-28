@@ -1,0 +1,14 @@
+{
+    "git.ignoreLimitWarning": true,
+    "python.pipenvPath": "E:\\Anaconda\\conda\\envs\\ai_llm\\Scripts",
+    "typescript.tsdk": "FrontEnd/node_modules/typescript/lib",
+    "typescript.enablePromptUseOfWorkspaceTsdk": true,
+    "javascript.preferences.importModuleSpecifierEnding": "js",
+    "typescript.preferences.importModuleSpecifierEnding": "js",
+    "files.associations": {
+        "*.js": "javascript"
+    },
+    "files.watcherExclude": {
+        "**/node_modules/**": true
+    }
+}

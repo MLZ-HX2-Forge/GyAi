@@ -117,13 +117,18 @@ const Utils = {
         let html = text;
         
         html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (match, lang, code) => {
-            return `<pre class="code-block"><code class="language-${lang}">${this.escapeHtml(code.trim())}</code></pre>`;
+            const langLabel = lang ? `<div class="code-lang">${lang}</div>` : '';
+            return `<pre class="code-block">${langLabel}<code class="language-${lang}">${this.escapeHtml(code.trim())}</code></pre>`;
         });
         
         html = html.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
         
+        html = html.replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
         html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
         html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+        html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+        
+        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
         
         html = html.replace(/^### (.+)$/gm, '<h3 class="md-h3">$1</h3>');
         html = html.replace(/^## (.+)$/gm, '<h2 class="md-h2">$1</h2>');
@@ -139,6 +144,10 @@ const Utils = {
         
         html = html.replace(/<p class="md-paragraph"><\/p>/g, '');
         html = html.replace(/<p class="md-paragraph"><br>/g, '<p class="md-paragraph">');
+        html = html.replace(/<p class="md-paragraph"><h/g, '<h');
+        html = html.replace(/<\/h(\d)><\/p>/g, '</h$1>');
+        html = html.replace(/<p class="md-paragraph"><pre/g, '<pre');
+        html = html.replace(/<\/pre><\/p>/g, '</pre>');
         
         return html;
     },

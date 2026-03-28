@@ -76,20 +76,20 @@ def require_auth(f):
     """认证装饰器"""
     @wraps(f)
     def decorated(*args, **kwargs):
-        from services.auth_service import AuthService
+        from services.auth_service import auth_service
         token = request.headers.get('Authorization')
         if not token:
             token = request.cookies.get('gyai_session')
-        
+
         if token:
             if token.startswith('Bearer '):
                 token = token[7:]
-            
-            user = AuthService.verify_token(token)
+
+            user = auth_service.verify_token(token)
             if user:
                 g.current_user = user
                 return f(*args, **kwargs)
-        
+
         g.current_user = None
         g.is_guest = True
         return f(*args, **kwargs)
@@ -105,7 +105,7 @@ def guest_allowed(f):
 
 class ResponseBuilder:
     """响应构建器"""
-    
+
     @staticmethod
     def success(data=None, message='操作成功'):
         return jsonify({
@@ -114,7 +114,7 @@ class ResponseBuilder:
             'data': data,
             'timestamp': format_timestamp()
         })
-    
+
     @staticmethod
     def error(code=500, message='操作失败', data=None):
         return jsonify({
@@ -123,7 +123,7 @@ class ResponseBuilder:
             'data': data,
             'timestamp': format_timestamp()
         }), code if code >= 400 else 500
-    
+
     @staticmethod
     def paginated(data, page, page_size, total):
         return jsonify({

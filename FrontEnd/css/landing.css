@@ -13,7 +13,7 @@
     left: 0;
     right: 0;
     height: var(--header-height);
-    background: rgba(10, 14, 20, 0.85);
+    background: var(--bg-secondary);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color);
     z-index: 1000;
@@ -21,7 +21,7 @@
 }
 
 .landing-header.scrolled {
-    background: rgba(10, 14, 20, 0.95);
+    background: var(--bg-primary);
     box-shadow: var(--shadow-lg);
 }
 

@@ -10,7 +10,8 @@ import sys
 # 在这里修改你要安装的包
 PACKAGES = [
 
-    'flask_sqlalchemy',
+    'pymysql',
+    'cryptography'
 
 
 ]

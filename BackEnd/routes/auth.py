@@ -17,19 +17,24 @@ def register():
         data = request.get_json()
         if not data:
             return ResponseBuilder.error(400, '请求数据无效')
-        
-        username = data.get('username', '').strip()
-        password = data.get('password', '').strip()
-        email = data.get('email', '').strip() or None
-        nickname = data.get('nickname', '').strip() or None
-        
+
+        username = (data.get('username') or '').strip()
+        password = (data.get('password') or '').strip()
+        email = (data.get('email') or '').strip() or None
+        nickname = (data.get('nickname') or '').strip() or None
+
+        if not username:
+            return ResponseBuilder.error(400, '用户名不能为空')
+        if not password:
+            return ResponseBuilder.error(400, '密码不能为空')
+
         result = auth_service.register(username, password, email, nickname)
-        
+
         if result['success']:
             return ResponseBuilder.success(result.get('user'), result['message'])
         else:
             return ResponseBuilder.error(400, result['message'])
-            
+
     except Exception as e:
         return ResponseBuilder.error(500, f'注册失败: {str(e)}')
 
@@ -40,12 +45,17 @@ def login():
         data = request.get_json()
         if not data:
             return ResponseBuilder.error(400, '请求数据无效')
-        
-        username = data.get('username', '').strip()
-        password = data.get('password', '').strip()
-        
+
+        username = (data.get('username') or '').strip()
+        password = (data.get('password') or '').strip()
+
+        if not username:
+            return ResponseBuilder.error(400, '用户名不能为空')
+        if not password:
+            return ResponseBuilder.error(400, '密码不能为空')
+
         result = auth_service.login(username, password)
-        
+
         if result['success']:
             response = jsonify({
                 'code': 200,
@@ -65,7 +75,7 @@ def login():
             return response
         else:
             return ResponseBuilder.error(401, result['message'])
-            
+
     except Exception as e:
         return ResponseBuilder.error(500, f'登录失败: {str(e)}')
 
@@ -74,7 +84,7 @@ def create_guest():
     """创建游客账户"""
     try:
         result = auth_service.create_guest()
-        
+
         if result['success']:
             response = jsonify({
                 'code': 200,
@@ -94,7 +104,7 @@ def create_guest():
             return response
         else:
             return ResponseBuilder.error(500, result['message'])
-            
+
     except Exception as e:
         return ResponseBuilder.error(500, f'创建游客失败: {str(e)}')
 
@@ -108,14 +118,14 @@ def logout():
             token = token[7:]
         else:
             token = request.cookies.get('gyai_session')
-        
+
         if token:
             auth_service.logout(token)
-        
+
         response = ResponseBuilder.success(message='登出成功')
         response.delete_cookie('gyai_session')
         return response
-        
+
     except Exception as e:
         return ResponseBuilder.error(500, f'登出失败: {str(e)}')
 
@@ -130,7 +140,7 @@ def get_current_user():
             return ResponseBuilder.success({'is_guest': True, 'nickname': '游客用户'})
         else:
             return ResponseBuilder.error(401, '未登录')
-            
+
     except Exception as e:
         return ResponseBuilder.error(500, f'获取用户信息失败: {str(e)}')
 
@@ -141,26 +151,26 @@ def update_current_user():
     try:
         if not hasattr(g, 'current_user') or not g.current_user:
             return ResponseBuilder.error(401, '未登录')
-        
+
         if g.current_user.get('is_guest'):
             return ResponseBuilder.error(403, '游客用户无法修改信息')
-        
+
         data = request.get_json()
         if not data:
             return ResponseBuilder.error(400, '请求数据无效')
-        
+
         result = auth_service.update_user(
             g.current_user['id'],
             nickname=data.get('nickname'),
             avatar=data.get('avatar'),
             settings=data.get('settings')
         )
-        
+
         if result['success']:
             return ResponseBuilder.success(message=result['message'])
         else:
             return ResponseBuilder.error(400, result['message'])
-            
+
     except Exception as e:
         return ResponseBuilder.error(500, f'更新失败: {str(e)}')
 
@@ -169,11 +179,11 @@ def check_username():
     """检查用户名是否可用"""
     try:
         data = request.get_json()
-        username = data.get('username', '').strip()
-        
+        username = (data.get('username') or '').strip()
+
         if not username:
             return ResponseBuilder.error(400, '用户名不能为空')
-        
+
         from services.auth_service import auth_service
         import sqlite3
         try:
@@ -185,6 +195,6 @@ def check_username():
                 return ResponseBuilder.success({'available': True, 'message': '用户名可用'})
         except:
             return ResponseBuilder.success({'available': True, 'message': '用户名可用'})
-            
+
     except Exception as e:
         return ResponseBuilder.error(500, f'检查失败: {str(e)}')

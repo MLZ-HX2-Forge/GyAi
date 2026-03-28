@@ -3,11 +3,55 @@
  */
 
 const Landing = {
-    init() {
+    async init() {
+        this.showLoadingState();
         this.bindEvents();
         this.initScrollEffects();
         this.initAnimations();
         this.initParticles();
+        this.hideLoadingState();
+    },
+    
+    showLoadingState() {
+        const existingOverlay = document.getElementById('pageLoadingOverlay');
+        if (existingOverlay) return;
+        
+        const overlay = document.createElement('div');
+        overlay.id = 'pageLoadingOverlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-primary);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease-out;
+        `;
+        overlay.innerHTML = `
+            <div class="loading-spinner" style="
+                width: 40px;
+                height: 40px;
+                border: 3px solid var(--border-color);
+                border-top-color: var(--primary-color);
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            "></div>
+        `;
+        document.body.appendChild(overlay);
+    },
+    
+    hideLoadingState() {
+        const overlay = document.getElementById('pageLoadingOverlay');
+        if (overlay) {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.remove();
+            }, 300);
+        }
     },
     
     bindEvents() {
@@ -264,6 +308,7 @@ const Landing = {
     }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await Auth.init();
     Landing.init();
 });

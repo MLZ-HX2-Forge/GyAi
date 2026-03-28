@@ -12,7 +12,7 @@ from config import Config
 
 class LLMService:
     """LLM服务类"""
-    
+
     def __init__(self):
         self.config = Config()
         self.models = {
@@ -22,35 +22,35 @@ class LLMService:
             'doubao_image': self.config.DOUBAO_IMAGE_GEN_CONFIG
         }
         self.default_model = 'deepseek'
-    
+
     def _build_headers(self, api_key: str) -> Dict[str, str]:
         """构建请求头"""
         return {
             'Authorization': f'Bearer {api_key}',
             'Content-Type': 'application/json'
         }
-    
-    def _build_messages(self, 
-                        user_message: str, 
+
+    def _build_messages(self,
+                        user_message: str,
                         history: List[Dict] = None,
                         system_prompt: str = None,
                         images: List[str] = None) -> List[Dict]:
         """构建消息列表"""
         messages = []
-        
+
         if system_prompt:
             messages.append({
                 'role': 'system',
                 'content': system_prompt
             })
-        
+
         if history:
             for msg in history:
                 messages.append({
                     'role': msg.get('role', 'user'),
                     'content': msg.get('content', '')
                 })
-        
+
         if images:
             content = [{'type': 'text', 'text': user_message}]
             for img_data in images:
@@ -65,15 +65,15 @@ class LLMService:
             messages.append({'role': 'user', 'content': content})
         else:
             messages.append({'role': 'user', 'content': user_message})
-        
+
         return messages
-    
+
     def _get_model_config(self, model: str, has_images: bool = False) -> Dict:
         """获取模型配置"""
         if has_images and model != 'doubao_vision':
             return self.models['doubao_vision']
         return self.models.get(model, self.models[self.default_model])
-    
+
     def chat_stream(self,
                     message: str,
                     model: str = None,
@@ -86,10 +86,10 @@ class LLMService:
         model = model or self.default_model
         has_images = bool(images)
         model_config = self._get_model_config(model, has_images)
-        
+
         headers = self._build_headers(model_config['api_key'])
         messages = self._build_messages(message, history, system_prompt, images)
-        
+
         payload = {
             'model': model_config['model'],
             'messages': messages,
@@ -97,52 +97,78 @@ class LLMService:
             'max_tokens': max_tokens,
             'stream': True
         }
-        
-        try:
-            response = requests.post(
-                model_config['api_url'],
-                headers=headers,
-                json=payload,
-                stream=True,
-                timeout=Config.STREAM_TIMEOUT
-            )
-            
-            if response.status_code != 200:
-                error_msg = f"API请求失败: {response.status_code}"
-                try:
-                    error_data = response.json()
-                    if 'error' in error_data:
-                        error_msg = error_data['error'].get('message', error_msg)
-                except:
-                    pass
-                yield f"data: {json.dumps({'error': error_msg}, ensure_ascii=False)}\n\n"
+
+        retry_count = 0
+        max_retries = 2
+
+        while retry_count <= max_retries:
+            try:
+                response = requests.post(
+                    model_config['api_url'],
+                    headers=headers,
+                    json=payload,
+                    stream=True,
+                    timeout=Config.STREAM_TIMEOUT,
+                    verify=False
+                )
+
+                if response.status_code != 200:
+                    error_msg = f"API请求失败: {response.status_code}"
+                    try:
+                        error_data = response.json()
+                        if 'error' in error_data:
+                            error_msg = error_data['error'].get('message', error_msg)
+                    except:
+                        pass
+
+                    if retry_count < max_retries:
+                        retry_count += 1
+                        time.sleep(0.5)
+                        continue
+
+                    yield f"data: {json.dumps({'error': error_msg}, ensure_ascii=False)}\n\n"
+                    return
+
+                buffer = []
+                for line in response.iter_lines():
+                    if line:
+                        line = line.decode('utf-8')
+                        if line.startswith('data: '):
+                            data = line[6:]
+                            if data == '[DONE]':
+                                yield "data: [DONE]\n\n"
+                                return
+                            try:
+                                chunk = json.loads(data)
+                                if 'choices' in chunk and len(chunk['choices']) > 0:
+                                    delta = chunk['choices'][0].get('delta', {})
+                                    content = delta.get('content', '')
+                                    if content:
+                                        buffer.append(content)
+                                        yield f"data: {json.dumps({'content': content}, ensure_ascii=False)}\n\n"
+                            except json.JSONDecodeError:
+                                continue
+
                 return
-            
-            for line in response.iter_lines():
-                if line:
-                    line = line.decode('utf-8')
-                    if line.startswith('data: '):
-                        data = line[6:]
-                        if data == '[DONE]':
-                            yield "data: [DONE]\n\n"
-                            break
-                        try:
-                            chunk = json.loads(data)
-                            if 'choices' in chunk and len(chunk['choices']) > 0:
-                                delta = chunk['choices'][0].get('delta', {})
-                                content = delta.get('content', '')
-                                if content:
-                                    yield f"data: {json.dumps({'content': content}, ensure_ascii=False)}\n\n"
-                        except json.JSONDecodeError:
-                            continue
-                            
-        except requests.exceptions.Timeout:
-            yield f"data: {json.dumps({'error': '请求超时，请稍后重试'}, ensure_ascii=False)}\n\n"
-        except requests.exceptions.RequestException as e:
-            yield f"data: {json.dumps({'error': f'网络错误: {str(e)}'}, ensure_ascii=False)}\n\n"
-        except Exception as e:
-            yield f"data: {json.dumps({'error': f'服务错误: {str(e)}'}, ensure_ascii=False)}\n\n"
-    
+
+            except requests.exceptions.Timeout:
+                if retry_count < max_retries:
+                    retry_count += 1
+                    time.sleep(0.5)
+                    continue
+                yield f"data: {json.dumps({'error': '请求超时，请稍后重试'}, ensure_ascii=False)}\n\n"
+                return
+            except requests.exceptions.RequestException as e:
+                if retry_count < max_retries:
+                    retry_count += 1
+                    time.sleep(0.5)
+                    continue
+                yield f"data: {json.dumps({'error': f'网络错误: {str(e)}'}, ensure_ascii=False)}\n\n"
+                return
+            except Exception as e:
+                yield f"data: {json.dumps({'error': f'服务错误: {str(e)}'}, ensure_ascii=False)}\n\n"
+                return
+
     def chat_sync(self,
                   message: str,
                   model: str = None,
@@ -155,10 +181,10 @@ class LLMService:
         model = model or self.default_model
         has_images = bool(images)
         model_config = self._get_model_config(model, has_images)
-        
+
         headers = self._build_headers(model_config['api_key'])
         messages = self._build_messages(message, history, system_prompt, images)
-        
+
         payload = {
             'model': model_config['model'],
             'messages': messages,
@@ -166,7 +192,7 @@ class LLMService:
             'max_tokens': max_tokens,
             'stream': False
         }
-        
+
         try:
             response = requests.post(
                 model_config['api_url'],
@@ -174,7 +200,7 @@ class LLMService:
                 json=payload,
                 timeout=60
             )
-            
+
             if response.status_code != 200:
                 error_msg = f"API请求失败: {response.status_code}"
                 try:
@@ -184,7 +210,7 @@ class LLMService:
                 except:
                     pass
                 return {'error': error_msg}
-            
+
             result = response.json()
             if 'choices' in result and len(result['choices']) > 0:
                 content = result['choices'][0].get('message', {}).get('content', '')
@@ -193,24 +219,24 @@ class LLMService:
                     'model': model_config['model'],
                     'usage': result.get('usage', {})
                 }
-            
+
             return {'error': '响应格式错误'}
-            
+
         except Exception as e:
             return {'error': str(e)}
-    
+
     def generate_image(self, prompt: str, model: str = 'doubao_image') -> Dict[str, Any]:
         """图片生成"""
         model_config = self.models.get(model, self.models['doubao_image'])
         headers = self._build_headers(model_config['api_key'])
-        
+
         payload = {
             'model': model_config['model'],
             'prompt': prompt,
             'n': 1,
             'size': '1024x1024'
         }
-        
+
         try:
             response = requests.post(
                 model_config['api_url'],
@@ -218,22 +244,22 @@ class LLMService:
                 json=payload,
                 timeout=120
             )
-            
+
             if response.status_code != 200:
                 return {'error': f'图片生成失败: {response.status_code}'}
-            
+
             result = response.json()
             if 'data' in result and len(result['data']) > 0:
                 return {'image_url': result['data'][0].get('url', '')}
-            
+
             return {'error': '图片生成失败'}
-            
+
         except Exception as e:
             return {'error': str(e)}
 
 class IndustrialKnowledgeBase:
     """工业知识库"""
-    
+
     def __init__(self):
         self.knowledge = {
             '设备维护': {
@@ -277,7 +303,7 @@ class IndustrialKnowledgeBase:
 请用专业、系统的语言回答问题。'''
             }
         }
-    
+
     def get_system_prompt(self, query: str) -> Optional[str]:
         """根据查询获取合适的系统提示"""
         query_lower = query.lower()
@@ -286,7 +312,7 @@ class IndustrialKnowledgeBase:
                 if keyword in query_lower:
                     return info['system_prompt']
         return None
-    
+
     def get_categories(self) -> List[Dict]:
         """获取所有知识分类"""
         return [
